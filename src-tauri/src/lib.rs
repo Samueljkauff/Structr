@@ -1,4 +1,8 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+pub mod backend;
+
+use backend::watcher::start;
+
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {0}! Here's your file directory: {1}", name, "files")

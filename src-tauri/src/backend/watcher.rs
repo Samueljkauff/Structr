@@ -1,11 +1,10 @@
 use std::{sync::mpsc::channel, thread};
 
 use notify::{Config, RecommendedWatcher, RecursiveMode, Watcher};
-use tauri::{command, AppHandle, Manager};
+use tauri::{AppHandle, Manager};
 
-#[command]
-fn start(app: AppHandle) {
-    // Resolve Downloads directory using Tauri
+#[tauri::command]
+pub fn start(app: AppHandle) {
     let downloads = app
         .path()
         .download_dir()
