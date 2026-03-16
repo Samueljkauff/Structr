@@ -12,7 +12,7 @@
       :style="workspaceStyle"
     >
       <div class="nodes-container">
-        <div v-for="node in nodes" class="folder-node">
+        <div v-for="node in nodes" @click="onClick(node.path)" class="folder-node">
           {{ node.name }}
         </div>
       </div>
@@ -23,6 +23,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { FolderNode } from '../interfaces/FolderNode';
+import { invoke } from '@tauri-apps/api/core';
 
 export default defineComponent({
   name: 'FolderScene',
@@ -31,7 +32,7 @@ export default defineComponent({
       scale: 1,
       offset: { x: 0, y: 0 },
       dragging: false,
-      lastPosition: { x: 0, y: 0 }
+      lastPosition: { x: 0, y: 0 },
     };
   },
   props: {
@@ -68,6 +69,10 @@ export default defineComponent({
       const zoomFactor = 0.02;
       this.scale += e.deltaY < 0 ? zoomFactor : -zoomFactor;
       this.scale = Math.max(0.3, Math.min(3, this.scale));
+    },
+    async onClick(nodeName: string) {
+      const children = await invoke<FolderNode[]>("load_children", { root: nodeName});
+      console.log(children);
     }
   }
 });
