@@ -18,9 +18,17 @@
 }
 
 .vue-flow__controls {
-  @apply bg-slate-800 border border-slate-600 rounded-md;
+  @apply bg-[#408A71] border-[#B0E4CC] border rounded-md;
 }
 
 .vue-flow__node-default {
   @apply text-xs;
+}
+
+.vue-flow__controls {
+  @apply flex flex-col gap-1 p-1 bg-[#408A71] border border-[#B0E4CC] rounded-md;
+}
+
+.vue-flow__controls button {
+  @apply bg-[#B0E4CC];
 }
