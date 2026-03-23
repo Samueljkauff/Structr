@@ -32,3 +32,11 @@
 .vue-flow__controls button {
   @apply bg-[#B0E4CC];
 }
+
+.dialog-container {
+  @apply flex justify-center items-center h-screen;
+}
+
+.dialog {
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#091413] border-[#B0E4CC] border p-4 w-[calc(100vw-25px)] h-[calc(100vh-25px)] rounded-lg z-9999;
+}

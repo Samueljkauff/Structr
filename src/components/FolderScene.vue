@@ -1,5 +1,8 @@
 <template>
   <VueFlow @node-click="handleNodeClick" :nodes="nodes" :edges="edges" :nodes-draggable="false">
+    <div v-if="dialog" class="dialog">
+      <button @click="closeDialog">X</button>
+    </div>
     <MiniMap />
     <Background :variant="BackgroundVariant.Dots" />
     <Controls position="top-left" :show-fit-view="true" :show-interactive="false" />
@@ -49,6 +52,7 @@ export default {
       const totalWidth = (children.length - 1) * childSpacing;
       const startX = -totalWidth / 2;
       const Y = layer*100;
+
       if(children.length <= 20) {
         const childNodes: Node[] = children.map((folder, index) => ({
           id: folder.path,
@@ -68,11 +72,18 @@ export default {
 
       this.nodes = [...this.nodes, ...childNodes];
       this.edges = [...this.edges, ...childEdges];
+
+      return;
       }
 
+      this.handleDialog();
+    },
+    handleDialog() {
       this.dialog = true;
-      //implement dialog logic
-    }
+    },
+    closeDialog() {
+      this.dialog = false;
+    },
   },
   components: {
     VueFlow,
