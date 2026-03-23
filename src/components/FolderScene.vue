@@ -1,7 +1,11 @@
 <template>
   <VueFlow @node-click="handleNodeClick" :nodes="nodes" :edges="edges" :nodes-draggable="false">
     <div v-if="dialog" class="dialog">
-      <button @click="closeDialog">X</button>
+      <div @click="closeDialog" class="flex justify-center rounded-xl border border-[#B0E4CC] text-[#B0E4CC] h-10 w-10 hover:bg-[#B0E4CC] hover:text-[#091413]">
+        <button>X</button>
+      </div>
+      <p>{{  }}</p>
+      <div class="w-full h-full border rounded-xl border-[#B0E4CC]"></div>
     </div>
     <MiniMap />
     <Background :variant="BackgroundVariant.Dots" />
@@ -25,6 +29,7 @@ export default {
       edges: [] as Edge[],
       nodes: [] as Node[],
       dialog: false,
+      highestLayer: 0,
       BackgroundVariant,
     };
   },
@@ -47,6 +52,8 @@ export default {
       const path = node.id as string;
       const layer = node.data.layer + 1;
       const children = await invoke<FolderNode[]>("load_children", {root:path});
+
+      this.pruneLayers(node.data.layer);
 
       const childSpacing = 125;
       const totalWidth = (children.length - 1) * childSpacing;
@@ -77,6 +84,14 @@ export default {
       }
 
       this.handleDialog();
+    },
+    pruneLayers(layer: number) {
+      this.nodes = this.nodes.filter(n => n.data.layer <= layer);
+
+      const validNodeIds = new Set(this.nodes.map(n => n.id));
+      this.edges = this.edges.filter(
+        e => validNodeIds.has(e.source) && validNodeIds.has(e.target)
+      );
     },
     handleDialog() {
       this.dialog = true;
