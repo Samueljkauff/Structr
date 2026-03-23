@@ -29,7 +29,6 @@ export default {
       edges: [] as Edge[],
       nodes: [] as Node[],
       dialog: false,
-      highestLayer: 0,
       BackgroundVariant,
     };
   },
