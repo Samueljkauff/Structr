@@ -5,7 +5,7 @@
   @apply bg-[#091413];
 }
 
-.vue-flow__node {
+.vue-flow__node , .dialog-node {
   @apply bg-[#285A48] text-white border border-[#B0E4CC] rounded-lg shadow-lg py-5 px-1 w-24 overflow-hidden text-ellipsis text-center !cursor-pointer;
 }
 

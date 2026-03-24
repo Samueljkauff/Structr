@@ -16,7 +16,7 @@
       :show-fit-view="true"
       :show-interactive="false"
     />
-    <Dialog :dialog="dialog" :selectedNode="selectedNode" @close-dialog="closeDialog" />
+    <Dialog :dialog="dialog" :selectedNode="selectedNode" :dialogChildren="dialogChildren" @close-dialog="closeDialog" />
   </VueFlow>
 </template>
 
@@ -43,6 +43,7 @@ export default {
       dialog: false,
       selectedNode: "",
       selectedPath: "",
+      dialogChildren: [] as string[],
       BackgroundVariant,
     };
   },
@@ -105,7 +106,7 @@ export default {
         return;
       }
 
-      this.handleDialog();
+      this.handleDialog(children);
     },
     pruneLayers(layer: number) {
       this.nodes = this.nodes.filter((n) => n.data.layer <= layer);
@@ -115,8 +116,9 @@ export default {
         (e) => validNodeIds.has(e.source) && validNodeIds.has(e.target),
       );
     },
-    handleDialog() {
+    handleDialog(children: FolderNode[]) {
       this.dialog = true;
+      this.dialogChildren = children.map((folder) => (folder.name));
     },
     closeDialog() {
       this.dialog = false;

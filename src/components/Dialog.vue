@@ -11,8 +11,10 @@
       <p class="text-white mt-10 ml-1 mb-2 text-3xl">{{ selectedNode }}/</p>
       </div>
       <div
-        class="flex-1 border rounded-xl border-[#B0E4CC] overflow-auto"
-      ></div>
+        class="grid grid-cols-12 border rounded-xl border-[#B0E4CC] overflow-auto"
+      >
+      <div class="dialog-node m-5 overflow-y-scroll" v-for="child in dialogChildren">{{ child }}</div>
+    </div>
     </div>
 </template>
 
@@ -28,7 +30,12 @@
                 type: String,
                 required: true,
                 default: "",
-            }
+            },
+            dialogChildren: {
+                type: Array as () => string[],
+                required: true,
+                default: () => [],
+            },
         },
         methods: {
             closeDialog() {
