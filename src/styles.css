@@ -6,7 +6,7 @@
 }
 
 .vue-flow__node {
-  @apply bg-[#285A48] text-white border border-[#B0E4CC] rounded-lg shadow-lg py-5 px-1 w-24 overflow-hidden text-ellipsis text-center;
+  @apply bg-[#285A48] text-white border border-[#B0E4CC] rounded-lg shadow-lg py-5 px-1 w-24 overflow-hidden text-ellipsis text-center !cursor-pointer;
 }
 
 .vue-flow__node.selected {
@@ -38,5 +38,24 @@
 }
 
 .dialog {
-  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#091413] border-[#B0E4CC] border p-4 w-[calc(100vw-25px)] h-[calc(100vh-25px)] rounded-lg z-9999;
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 backdrop-blur-xl bg-[#091413]/30 border-[#B0E4CC] border p-4 w-[calc(100vw-25px)] h-[calc(100vh-25px)] rounded-lg z-9999;
+}
+
+.dialog-animation {
+    @apply animate-[slideUp_0.3s_ease-out_forwards];
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.container {
+  @apply border border-[#B0E4CC] rounded-md bg-[#091413] text-white
 }
