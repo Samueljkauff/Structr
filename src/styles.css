@@ -6,7 +6,7 @@
 }
 
 .vue-flow__node , .dialog-node {
-  @apply bg-[#285A48] text-white border border-[#B0E4CC] rounded-lg shadow-lg py-5 px-1 w-24 overflow-hidden text-ellipsis text-center !cursor-pointer;
+  @apply bg-[#285A48] text-white border border-[#B0E4CC] rounded-lg shadow-lg py-5 px-1 w-24 overflow-hidden truncate text-center !cursor-pointer;
 }
 
 .vue-flow__node.selected {
@@ -57,5 +57,13 @@
 }
 
 .container {
-  @apply border border-[#B0E4CC] rounded-md bg-[#091413] text-white
+  @apply border border-[#B0E4CC] rounded-md bg-[#091413] text-white;
+}
+
+.input {
+  @apply backdrop-blur-xs text-white border border-[#B0E4CC] rounded-xl px-3 py-2;
+}
+
+.dialog-node:active {
+  @apply border-blue-400 ring-2 ring-blue-500;
 }

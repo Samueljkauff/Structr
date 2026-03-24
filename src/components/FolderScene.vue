@@ -5,10 +5,7 @@
     :edges="edges"
     :nodes-draggable="false"
   >
-  <ContextMenu :selectedNode="selectedNode" />
-    <div class="fixed bottom-4 left-4 text-white z-50">
-      <p>Current Path: {{ selectedPath }}</p>
-    </div>
+    <ContextMenu :selectedNode="selectedNode" />
     <MiniMap />
     <Background :variant="BackgroundVariant.Dots" />
     <Controls
@@ -16,7 +13,16 @@
       :show-fit-view="true"
       :show-interactive="false"
     />
-    <Dialog :dialog="dialog" :selectedNode="selectedNode" :dialogChildren="dialogChildren" @close-dialog="closeDialog" />
+    <div class="fixed bottom-4 left-4 text-white z-50">
+      <p>Current Path: {{ selectedPath }}</p>
+    </div>
+    <Dialog
+      :dialog="dialog"
+      :selectedNode="selectedNode"
+      :dialogChildren="dialogChildren"
+      @close-dialog="closeDialog"
+      @add-node="addNode"
+    />
   </VueFlow>
 </template>
 
@@ -43,7 +49,7 @@ export default {
       dialog: false,
       selectedNode: "",
       selectedPath: "",
-      dialogChildren: [] as string[],
+      dialogChildren: [] as FolderNode[],
       BackgroundVariant,
     };
   },
@@ -61,10 +67,21 @@ export default {
       },
     };
     this.nodes = [homeNode];
+
+    const nodeWidth = 96;
+    const nodeHeight = 96;
+
+    this.$nextTick(() => {
+      this.setCenter(
+        homeNode.position.x + nodeWidth / 2,
+        homeNode.position.y + nodeHeight / 2,
+        { zoom: 1, duration: 0 },
+      );
+    });
   },
   setup() {
-    useVueFlow();
-    return {};
+    const { setCenter } = useVueFlow();
+    return { setCenter };
   },
   methods: {
     async handleNodeClick({ node }: NodeMouseEvent) {
@@ -118,13 +135,43 @@ export default {
     },
     handleDialog(children: FolderNode[]) {
       this.dialog = true;
-      this.dialogChildren = children.map((folder) => (folder.name));
+      this.dialogChildren = children;
     },
     closeDialog() {
       this.dialog = false;
     },
+addNode(folder: FolderNode) {
+  const parentNode = this.nodes.find((n) => n.data.label === this.selectedNode);
+  if (!parentNode) return;
+
+  const layer = parentNode.data.layer + 1;
+  const nodeWidth = 96;
+  const newX = 0;
+  const newY = layer * 100;
+
+  const newNode: Node = {
+    id: folder.path,
+    position: { x: newX, y: newY },
+    data: {
+      label: folder.name,
+      folder,
+      layer,
+    },
+  };
+
+  const newEdge: Edge = {
+    id: `${parentNode.id}-${newNode.id}`,
+    source: parentNode.id,
+    target: newNode.id,
+    type: "smoothstep",
+  };
+
+  this.nodes.push(newNode);
+  this.edges.push(newEdge);
+  this.closeDialog();
+},
   },
-  emits: ['closeDialog'],
+  emits: ["closeDialog", "addNode"],
   components: {
     VueFlow,
     Background,

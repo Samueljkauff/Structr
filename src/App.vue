@@ -1,16 +1,17 @@
 <template>
   <div id="app">
-    <FolderScene/>
+    <FolderScene />
   </div>
 </template>
 
 <script setup lang="ts">
-import FolderScene from './components/FolderScene.vue';
-
+import FolderScene from "./components/FolderScene.vue";
 </script>
 
 <style>
-html, body, #app {
+html,
+body,
+#app {
   margin: 0;
   padding: 0;
   width: 100%;

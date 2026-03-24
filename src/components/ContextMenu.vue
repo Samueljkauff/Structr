@@ -4,7 +4,7 @@
       <p class="text-white text-2xl">Folder: {{ selectedNode }}</p>
       <input
         v-model="contextText"
-        class="backdrop-blur-xs text-white border border-[#B0E4CC] rounded-xl px-3 py-2"
+        class="input"
         type="text"
         placeholder="Enter context (max 50 chars)"
         maxlength="50"
@@ -18,27 +18,32 @@
         </button>
       </div>
     </div>
+    <div class="flex flex-col gap-2" v-else>
+      <p class="text-white text-3xl">Welcome to Structrs!</p>
+      <p class="text-gray-400">
+        Click a node to begin exploring your folder structure and giving nodes
+        context!
+      </p>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-    export default {
-        data() {
-            return {
-                contextText: "",
-            }
-        },
-        props: {
-            selectedNode: {
-                type: String,
-                required: true,
-                default: "",
-            }
-        },
-        methods: {
-            addContext() {
-
-            },
-        }
-    }
+export default {
+  data() {
+    return {
+      contextText: "",
+    };
+  },
+  props: {
+    selectedNode: {
+      type: String,
+      required: true,
+      default: "",
+    },
+  },
+  methods: {
+    addContext() {},
+  },
+};
 </script>
