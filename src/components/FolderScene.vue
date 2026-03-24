@@ -5,43 +5,9 @@
     :edges="edges"
     :nodes-draggable="false"
   >
+  <ContextMenu :selectedNode="selectedNode" />
     <div class="fixed bottom-4 left-4 text-white z-50">
       <p>Current Path: {{ selectedPath }}</p>
-    </div>
-    <div class="fixed top-4 right-4 z-50 w-72">
-  <div v-if="selectedNode" class="flex flex-col gap-3">
-    <p class="text-white text-2xl">Folder: {{ selectedNode }}</p>
-    <input
-      v-model="contextText"
-      class="backdrop-blur-xs text-white border border-[#B0E4CC] rounded-xl px-3 py-2"
-      type="text"
-      placeholder="Enter context (max 50 chars)"
-      maxlength="50"
-    />
-    <div class="w-full flex justify-end">
-      <button
-        @click="addContext"
-        class="rounded-xl border border-[#B0E4CC] text-[#B0E4CC] backdrop-blur-xs hover:bg-[#B0E4CC] hover:text-[#091413] py-2 w-20 cursor-pointer"
-      >
-        Add
-      </button>
-    </div>
-  </div>
-</div>
-    <div v-if="dialog" class="dialog dialog-animation">
-      <div
-        @click="closeDialog"
-        class="flex justify-center rounded-xl border border-[#B0E4CC] text-[#B0E4CC] h-10 w-10 hover:bg-[#B0E4CC] hover:text-[#091413] cursor-pointer"
-      >
-        <button class="cursor-pointer">X</button>
-      </div>
-      <div class="flex justify-items-end align-middle">
-      <img class="mt-9 ml-3 mb-3 inline h-10 w-10" src="../icons/folder_icon.png"/>
-      <p class="text-white mt-10 ml-1 mb-2 text-3xl">{{ selectedNode }}/</p>
-      </div>
-      <div
-        class="flex-1 border rounded-xl border-[#B0E4CC] overflow-auto"
-      ></div>
     </div>
     <MiniMap />
     <Background :variant="BackgroundVariant.Dots" />
@@ -50,6 +16,7 @@
       :show-fit-view="true"
       :show-interactive="false"
     />
+    <Dialog :dialog="dialog" :selectedNode="selectedNode" @close-dialog="closeDialog" />
   </VueFlow>
 </template>
 
@@ -65,6 +32,8 @@ import {
   MiniMap,
 } from "@vue-flow/additional-components";
 import { Controls } from "@vue-flow/controls";
+import ContextMenu from "./ContextMenu.vue";
+import Dialog from "./Dialog.vue";
 
 export default {
   data() {
@@ -74,7 +43,6 @@ export default {
       dialog: false,
       selectedNode: "",
       selectedPath: "",
-      contextText: "",
       BackgroundVariant,
     };
   },
@@ -153,15 +121,15 @@ export default {
     closeDialog() {
       this.dialog = false;
     },
-    addContext() {
-
-    },
   },
+  emits: ['closeDialog'],
   components: {
     VueFlow,
     Background,
     MiniMap,
     Controls,
+    ContextMenu,
+    Dialog,
   },
 };
 </script>
