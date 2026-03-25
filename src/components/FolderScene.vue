@@ -63,7 +63,7 @@ export default {
       data: {
         label: "Home",
         folder: { path: rootPath, name: rootName },
-        layer: 1,
+        layer: 0,
       },
     };
     this.nodes = [homeNode];
@@ -145,7 +145,6 @@ addNode(folder: FolderNode) {
   if (!parentNode) return;
 
   const layer = parentNode.data.layer + 1;
-  const nodeWidth = 96;
   const newX = 0;
   const newY = layer * 100;
 
