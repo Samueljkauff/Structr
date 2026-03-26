@@ -11,13 +11,14 @@
       />
       <div class="w-full flex justify-end">
         <button
+        v-if="selectedNode.data.description"
           @click="removeContext"
           class="mr-2 rounded-xl border border-red-200 text-red-200 backdrop-blur-xs hover:bg-red-200 hover:text-[#091413] py-2 w-20 cursor-pointer"
         >
           Clear
         </button>
         <button
-          @click="addContext"
+          @click="addContext(selectedNode.data.description)"
           class="rounded-xl border border-[#B0E4CC] text-[#B0E4CC] backdrop-blur-xs hover:bg-[#B0E4CC] hover:text-[#091413] py-2 w-20 cursor-pointer"
         >
           Add
@@ -51,8 +52,8 @@ export default {
     },
   },
   methods: {
-    addContext() {
-      
+    addContext(description: string) {
+        description = this.contextText;
     },
     removeContext() {
 
