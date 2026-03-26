@@ -14,7 +14,7 @@
       :show-interactive="false"
     />
     <div class="fixed bottom-4 left-4 text-white z-50">
-      <p>Current Path: {{ selectedPath }}</p>
+      <p>Current Path: {{ selectedPath.id }}</p>
     </div>
     <Dialog
       :dialog="dialog"
@@ -48,7 +48,7 @@ export default {
       nodes: [] as Node[],
       dialog: false,
       selectedNode: null as Node | null,
-      selectedPath: "",
+      selectedPath: {} as Node,
       dialogChildren: [] as FolderNode[],
       BackgroundVariant,
     };
@@ -67,6 +67,7 @@ export default {
         description: "",
       },
     };
+    
     this.nodes = [homeNode];
 
     const nodeWidth = 96;
@@ -74,8 +75,8 @@ export default {
 
     this.$nextTick(() => {
       this.setCenter(
-        homeNode.position.x + nodeWidth / 2,
-        homeNode.position.y + nodeHeight / 2,
+        0 + nodeWidth / 2,
+        0 + nodeHeight / 2,
         { zoom: 1, duration: 0 },
       );
     });
@@ -86,15 +87,19 @@ export default {
   },
   methods: {
     async handleNodeClick({ node }: NodeMouseEvent) {
-      this.selectedPath = node.id as string;
+      this.selectedPath = node;
       const layer = node.data.layer + 1;
       this.selectedNode = node;
 
+      await this.openNode(layer, node.id);
+      
+    },
+    async openNode(layer: number, path: string) {
       const children = await invoke<FolderNode[]>("load_children", {
-        root: this.selectedPath,
+        root: path,
       });
 
-      this.pruneLayers(node.data.layer);
+      this.pruneLayers(layer);
 
       const childSpacing = 125;
       const totalWidth = (children.length - 1) * childSpacing;
@@ -112,8 +117,8 @@ export default {
         }));
 
         const childEdges: Edge[] = childNodes.map((child) => ({
-          id: `${node.id}-${child.id}`,
-          source: node.id,
+          id: `${path}-${child.id}`,
+          source: path,
           target: child.id,
           type: "smoothstep",
         }));
@@ -127,7 +132,7 @@ export default {
       this.handleDialog(children);
     },
     pruneLayers(layer: number) {
-      this.nodes = this.nodes.filter((n) => n.data.layer <= layer);
+      this.nodes = this.nodes.filter((n) => n.data.layer < layer);
 
       const validNodeIds = new Set(this.nodes.map((n) => n.id));
       this.edges = this.edges.filter(
@@ -142,9 +147,7 @@ export default {
       this.dialog = false;
     },
     addNode(folder: FolderNode) {
-      const parentNode = this.nodes.find(
-        (n) => n.data.label === this.selectedNode,
-      );
+      const parentNode = this.selectedNode;
       if (!parentNode) return;
 
       const layer = parentNode.data.layer + 1;
