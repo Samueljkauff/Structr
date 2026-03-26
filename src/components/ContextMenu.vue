@@ -7,11 +7,11 @@
         class="input"
         type="text"
         placeholder="Enter context (max 50 chars)"
-        maxlength="50"
+        maxlength="100"
       />
       <div class="w-full flex justify-end">
         <button
-        v-if="selectedNode.data.description"
+          v-if="selectedNode.data.description"
           @click="removeContext"
           class="mr-2 rounded-xl border border-red-200 text-red-200 backdrop-blur-xs hover:bg-red-200 hover:text-[#091413] py-2 w-20 cursor-pointer"
         >
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import type { Node } from '@vue-flow/core';
+import type { Node } from "@vue-flow/core";
 
 export default {
   data() {
@@ -53,11 +53,9 @@ export default {
   },
   methods: {
     addContext(description: string) {
-        description = this.contextText;
+      description = this.contextText;
     },
-    removeContext() {
-
-    },
+    removeContext() {},
   },
 };
 </script>

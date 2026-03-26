@@ -13,7 +13,7 @@
       :show-fit-view="true"
       :show-interactive="false"
     />
-    <div class="fixed bottom-4 left-4 text-white z-50">
+    <div v-if="selectedPath.id" class="fixed bottom-4 left-4 text-white z-50">
       <p>Current Path: {{ selectedPath.id }}</p>
     </div>
     <Dialog
@@ -67,18 +67,17 @@ export default {
         description: "",
       },
     };
-    
+
     this.nodes = [homeNode];
 
     const nodeWidth = 96;
     const nodeHeight = 96;
 
     this.$nextTick(() => {
-      this.setCenter(
-        0 + nodeWidth / 2,
-        0 + nodeHeight / 2,
-        { zoom: 1, duration: 0 },
-      );
+      this.setCenter(0 + nodeWidth / 2, 0 + nodeHeight / 2, {
+        zoom: 1,
+        duration: 0,
+      });
     });
   },
   setup() {
@@ -92,7 +91,6 @@ export default {
       this.selectedNode = node;
 
       await this.openNode(layer, node.id);
-      
     },
     async openNode(layer: number, path: string) {
       const children = await invoke<FolderNode[]>("load_children", {
@@ -173,7 +171,7 @@ export default {
 
       this.nodes.push(newNode);
       this.edges.push(newEdge);
-      await this.openNode(newNode.data.layer+1, folder.path)
+      await this.openNode(newNode.data.layer + 1, folder.path);
       this.closeDialog();
     },
   },
