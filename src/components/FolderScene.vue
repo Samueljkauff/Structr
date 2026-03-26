@@ -146,7 +146,7 @@ export default {
     closeDialog() {
       this.dialog = false;
     },
-    addNode(folder: FolderNode) {
+    async addNode(folder: FolderNode) {
       const parentNode = this.selectedNode;
       if (!parentNode) return;
 
@@ -173,6 +173,7 @@ export default {
 
       this.nodes.push(newNode);
       this.edges.push(newEdge);
+      await this.openNode(newNode.data.layer+1, folder.path)
       this.closeDialog();
     },
   },
