@@ -9,7 +9,7 @@
     <div class="flex justify-between items-center mb-1 mt-2">
       <p class="text-white ml-1 text-3xl">
         <img class="mb-1 inline h-10 w-10" src="../icons/folder_icon.png" />
-        {{ selectedNode }}/
+        {{ selectedNode?.data.label }}
       </p>
       <input
         v-model="search"
@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { FolderNode } from "../interfaces/FolderNode";
-
+import type { Node } from "@vue-flow/core";
 export default {
   data() {
     return {
@@ -47,9 +47,9 @@ export default {
       default: false,
     },
     selectedNode: {
-      type: String,
-      required: true,
-      default: "",
+      type: Object as () => Node | null,
+      required: false,
+      default: {},
     },
     dialogChildren: {
       type: Array as () => FolderNode[],

@@ -47,7 +47,7 @@ export default {
       edges: [] as Edge[],
       nodes: [] as Node[],
       dialog: false,
-      selectedNode: "",
+      selectedNode: null as Node | null,
       selectedPath: "",
       dialogChildren: [] as FolderNode[],
       BackgroundVariant,
@@ -64,6 +64,7 @@ export default {
         label: "Home",
         folder: { path: rootPath, name: rootName },
         layer: 0,
+        description: "",
       },
     };
     this.nodes = [homeNode];
@@ -87,7 +88,7 @@ export default {
     async handleNodeClick({ node }: NodeMouseEvent) {
       this.selectedPath = node.id as string;
       const layer = node.data.layer + 1;
-      this.selectedNode = node.data.label;
+      this.selectedNode = node;
 
       const children = await invoke<FolderNode[]>("load_children", {
         root: this.selectedPath,
@@ -140,35 +141,37 @@ export default {
     closeDialog() {
       this.dialog = false;
     },
-addNode(folder: FolderNode) {
-  const parentNode = this.nodes.find((n) => n.data.label === this.selectedNode);
-  if (!parentNode) return;
+    addNode(folder: FolderNode) {
+      const parentNode = this.nodes.find(
+        (n) => n.data.label === this.selectedNode,
+      );
+      if (!parentNode) return;
 
-  const layer = parentNode.data.layer + 1;
-  const newX = 0;
-  const newY = layer * 100;
+      const layer = parentNode.data.layer + 1;
+      const newX = 0;
+      const newY = layer * 100;
 
-  const newNode: Node = {
-    id: folder.path,
-    position: { x: newX, y: newY },
-    data: {
-      label: folder.name,
-      folder,
-      layer,
+      const newNode: Node = {
+        id: folder.path,
+        position: { x: newX, y: newY },
+        data: {
+          label: folder.name,
+          folder,
+          layer,
+        },
+      };
+
+      const newEdge: Edge = {
+        id: `${parentNode.id}-${newNode.id}`,
+        source: parentNode.id,
+        target: newNode.id,
+        type: "smoothstep",
+      };
+
+      this.nodes.push(newNode);
+      this.edges.push(newEdge);
+      this.closeDialog();
     },
-  };
-
-  const newEdge: Edge = {
-    id: `${parentNode.id}-${newNode.id}`,
-    source: parentNode.id,
-    target: newNode.id,
-    type: "smoothstep",
-  };
-
-  this.nodes.push(newNode);
-  this.edges.push(newEdge);
-  this.closeDialog();
-},
   },
   emits: ["closeDialog", "addNode"],
   components: {
