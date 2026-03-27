@@ -5,7 +5,10 @@
 </template>
 
 <script setup lang="ts">
+import { invoke } from "@tauri-apps/api/core";
 import FolderScene from "./components/FolderScene.vue";
+
+invoke("start");
 </script>
 
 <style>

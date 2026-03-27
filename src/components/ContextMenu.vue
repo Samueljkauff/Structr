@@ -2,6 +2,7 @@
   <div class="fixed top-4 right-4 z-50 w-72">
     <div v-if="selectedNode" class="flex flex-col gap-3">
       <p class="text-white text-2xl">Folder: {{ selectedNode.data.label }}</p>
+      <p class="text-gray-400">What files belongs in {{ selectedNode.data.label }}?</p>
       <input
         v-model="contextText"
         class="input"
@@ -9,6 +10,7 @@
         placeholder="Enter context (max 50 chars)"
         maxlength="100"
       />
+      <p class="text-gray-400">Description: {{ selectedNode.data.description }}</p>
       <div class="w-full flex justify-end">
         <button
           v-if="selectedNode.data.description"
@@ -18,7 +20,7 @@
           Clear
         </button>
         <button
-          @click="addContext(selectedNode.data.description)"
+          @click="addContext"
           class="rounded-xl border border-[#B0E4CC] text-[#B0E4CC] backdrop-blur-xs hover:bg-[#B0E4CC] hover:text-[#091413] py-2 w-20 cursor-pointer"
         >
           Add
@@ -52,8 +54,9 @@ export default {
     },
   },
   methods: {
-    addContext(description: string) {
-      description = this.contextText;
+    addContext() {
+      this.$emit("add-context", this.contextText);
+      this.contextText = "";
     },
     removeContext() {},
   },

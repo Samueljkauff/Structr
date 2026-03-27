@@ -5,7 +5,7 @@
     :edges="edges"
     :nodes-draggable="false"
   >
-    <ContextMenu :selectedNode="selectedNode" />
+    <ContextMenu :selected-node="selectedNode" @add-context="addContext" />
     <MiniMap />
     <Background :variant="BackgroundVariant.Dots" />
     <Controls
@@ -174,8 +174,14 @@ export default {
       await this.openNode(newNode.data.layer + 1, folder.path);
       this.closeDialog();
     },
+    addContext(description: string) {
+    if (!this.selectedNode) return;
+    
+    this.selectedNode.data.description = description;
+    console.log(this.selectedNode.data.description);
+    },
   },
-  emits: ["closeDialog", "addNode"],
+  emits: ["closeDialog", "addNode", "addContext"],
   components: {
     VueFlow,
     Background,
