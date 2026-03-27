@@ -1,5 +1,6 @@
 <template>
-  <div v-if="dialog" class="dialog dialog-animation">
+  <transition enter-active-class="dialog-animation" leave-active-class="dialog-animation-out">
+    <div v-if="dialog" class="dialog">
     <div
       @click="closeDialog"
       class="flex justify-center rounded-xl border border-[#B0E4CC] text-[#B0E4CC] h-10 w-10 hover:bg-[#B0E4CC] hover:text-[#091413] cursor-pointer"
@@ -18,7 +19,7 @@
         placeholder="Search for a Folder"
       />
     </div>
-    <div class="grid grid-cols-12 max-h-228 overflow-y-auto p-4">
+    <div class="grid xl:grid-cols-12 lg:grid-cols-8 md:grid-cols-6 grid-cols-4 max-h-228 overflow-y-hidden p-4">
       <div
         @click="selectNode(child)"
         class="dialog-node m-2 cursor-pointer"
@@ -29,6 +30,7 @@
       </div>
     </div>
   </div>
+  </transition>
 </template>
 
 <script lang="ts">

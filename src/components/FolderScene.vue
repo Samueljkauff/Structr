@@ -5,7 +5,11 @@
     :edges="edges"
     :nodes-draggable="false"
   >
-    <ContextMenu :selected-node="selectedNode" @add-context="addContext" />
+    <ContextMenu
+      :selected-node="selectedNode"
+      @add-context="addContext"
+      @remove-context="removeContext"
+    />
     <MiniMap />
     <Background :variant="BackgroundVariant.Dots" />
     <Controls
@@ -175,13 +179,27 @@ export default {
       this.closeDialog();
     },
     addContext(description: string) {
-    if (!this.selectedNode) return;
-    
-    this.selectedNode.data.description = description;
-    console.log(this.selectedNode.data.description);
+      if (!this.selectedNode) return;
+
+      const updated = {
+        ...this.selectedNode,
+        data: {
+          ...this.selectedNode.data,
+          description,
+        },
+      };
+
+      this.nodes = this.nodes.map(n =>
+        n.id === updated.id ? updated : n
+      );
+
+      this.selectedNode = updated;
+    },
+    removeContext() {
+      invoke("remove_description");
     },
   },
-  emits: ["closeDialog", "addNode", "addContext"],
+  emits: ["closeDialog", "addNode", "addContext", "remove-context"],
   components: {
     VueFlow,
     Background,

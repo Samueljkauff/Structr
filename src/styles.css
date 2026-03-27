@@ -56,6 +56,21 @@
   }
 }
 
+.dialog-animation-out {
+  @apply animate-[slideDown_0.25s_ease-in_forwards];
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+}
+
 .container {
   @apply border border-[#B0E4CC] rounded-md bg-[#091413] text-white;
 }
