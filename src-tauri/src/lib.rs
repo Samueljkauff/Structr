@@ -1,6 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 pub mod backend;
 pub mod domain;
+pub mod schema;
 
 use backend::{ watcher::start, folder_tree::load_children };
 
