@@ -26,6 +26,7 @@ notify = "6"
 mime_guess = "2.0.5"
 chrono = "0.4.43"
 walkdir = "2.5.0"
-rusqlite = "0.39.0"
+diesel = { version = "2.3.7", features = ["sqlite"] }
+dotenvy = "0.15.7"
 
 
