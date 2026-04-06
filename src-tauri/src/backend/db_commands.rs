@@ -1,5 +1,6 @@
 use crate::backend::db::*;
 
+#[tauri::command]
 pub fn save_folder_data(path: String, description: String) -> Result<(), String> {
     match upsert_metadata(&path, &description) {
         Ok(_) => Ok(()),
@@ -7,6 +8,7 @@ pub fn save_folder_data(path: String, description: String) -> Result<(), String>
     }
 }
 
+#[tauri::command]
 pub fn get_folder_data(path: String) -> Result<(), String> {
     match get_metadata(&path) {
         Ok(_) => Ok(()),
@@ -14,6 +16,7 @@ pub fn get_folder_data(path: String) -> Result<(), String> {
     }
 }
 
+#[tauri::command]
 pub fn get_all_data() -> Result<(), String> {
     match get_all_metadata() {
         Ok(_) => Ok(()),
@@ -21,6 +24,7 @@ pub fn get_all_data() -> Result<(), String> {
     }
 }
 
+#[tauri::command]
 pub fn delete_folder_data(path: String) -> Result<(), String> {
     match remove_metadata(&path) {
         Ok(_) => Ok(()),
