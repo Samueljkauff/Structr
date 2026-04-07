@@ -1,4 +1,4 @@
-use crate::backend::db::*;
+use crate::{backend::db::*, domain::models::NodeMetadata};
 
 #[tauri::command]
 pub fn save_folder_data(path: String, description: String) -> Result<(), String> {
@@ -9,9 +9,9 @@ pub fn save_folder_data(path: String, description: String) -> Result<(), String>
 }
 
 #[tauri::command]
-pub fn get_folder_data(path: String) -> Result<(), String> {
+pub fn get_folder_data(path: String) -> Result<NodeMetadata, String> {
     match get_metadata(&path) {
-        Ok(_) => Ok(()),
+        Ok(data) => Ok(data),
         Err(e) => Err(e.to_string()),
     }
 }

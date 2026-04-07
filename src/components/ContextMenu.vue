@@ -59,7 +59,7 @@ export default {
       this.contextText = "";
     },
     removeContext() {
-      this.$emit("remove-context")
+      this.$emit("remove-context");
     },
   },
 };

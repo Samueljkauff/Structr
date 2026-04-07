@@ -1,7 +1,8 @@
 use diesel::prelude::*;
 use chrono::NaiveDateTime;
+use serde::Serialize;
 
-#[derive(Queryable)]
+#[derive(Queryable, Serialize)]
 pub struct NodeMetadata {
     pub path: String,
     pub description: String,

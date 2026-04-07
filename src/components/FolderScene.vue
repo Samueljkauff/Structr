@@ -115,7 +115,7 @@ export default {
             x: startX + index * childSpacing,
             y: Y,
           },
-          data: { label: folder.name, folder, layer },
+          data: { label: folder.name, folder, layer, description: "" },
         }));
 
         const childEdges: Edge[] = childNodes.map((child) => ({
@@ -178,9 +178,15 @@ export default {
       await this.openNode(newNode.data.layer + 1, folder.path);
       this.closeDialog();
     },
-    addContext(description: string) {
+    async addContext(description: string) {
       if (!this.selectedNode) return;
+      const path = this.selectedNode.id as string;
 
+      try {
+        await invoke("save_folder_data", {path, description});
+      } catch {
+        console.error('error');
+      }
       const updated = {
         ...this.selectedNode,
         data: {
