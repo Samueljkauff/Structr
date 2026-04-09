@@ -1,33 +1,45 @@
 use crate::{backend::db::*, domain::models::NodeMetadata};
 
 #[tauri::command]
-pub fn save_folder_data(path: String, description: String) -> Result<(), String> {
-    match upsert_metadata(&path, &description) {
-        Ok(_) => Ok(()),
-        Err(e) => Err(e.to_string()),
-    }
+pub fn save_folder_data(
+    app: tauri::AppHandle,
+    path: String,
+    description: String,
+) -> Result<(), String> {
+    upsert_metadata(&app, &path, &description)?;
+    Ok(())
 }
 
 #[tauri::command]
-pub fn get_folder_data(path: String) -> Result<NodeMetadata, String> {
-    match get_metadata(&path) {
-        Ok(data) => Ok(data),
-        Err(e) => Err(e.to_string()),
-    }
+pub fn get_folder_data(
+    app: tauri::AppHandle,
+    path: String,
+) -> Result<Option<NodeMetadata>, String> {
+    get_metadata(&app, &path)
 }
 
 #[tauri::command]
-pub fn get_all_data() -> Result<(), String> {
-    match get_all_metadata() {
-        Ok(_) => Ok(()),
-        Err(e) => Err(e.to_string()),
-    }
+pub fn get_description(
+    app: tauri::AppHandle,
+    path: String,
+) -> Result<Option<String>, String> {
+    let metadata = get_metadata(&app, &path)?;
+
+    Ok(metadata.map(|m| m.description))
 }
 
 #[tauri::command]
-pub fn delete_folder_data(path: String) -> Result<(), String> {
-    match remove_metadata(&path) {
-        Ok(_) => Ok(()),
-        Err(e) => Err(e.to_string()),
-    }
+pub fn get_all_data(
+    app: tauri::AppHandle,
+) -> Result<Vec<NodeMetadata>, String> {
+    get_all_metadata(&app)
+}
+
+#[tauri::command]
+pub fn delete_folder_data(
+    app: tauri::AppHandle,
+    path: String,
+) -> Result<(), String> {
+    remove_metadata(&app, &path)?;
+    Ok(())
 }

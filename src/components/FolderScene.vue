@@ -101,6 +101,10 @@ export default {
         root: path,
       });
 
+      if (this.selectedNode && this.selectedNode.data) {
+        this.selectedNode.data.description = await invoke("get_folder_data", { path }) || "";
+      }
+
       this.pruneLayers(layer);
 
       const childSpacing = 125;
@@ -184,8 +188,8 @@ export default {
 
       try {
         await invoke("save_folder_data", {path, description});
-      } catch {
-        console.error('error');
+      } catch(e) {
+        console.error(e);
       }
       const updated = {
         ...this.selectedNode,

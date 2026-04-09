@@ -2,5 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
+    dotenvy::dotenv().ok();
     filestructureagent_lib::run()
 }
