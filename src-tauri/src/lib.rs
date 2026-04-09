@@ -23,7 +23,8 @@ pub fn run() {
             save_folder_data,
             get_all_data,
             get_folder_data,
-            delete_folder_data
+            delete_folder_data,
+            get_description
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

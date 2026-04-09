@@ -102,7 +102,7 @@ export default {
       });
 
       if (this.selectedNode && this.selectedNode.data) {
-        this.selectedNode.data.description = await invoke("get_folder_data", { path }) || "";
+        this.selectedNode.data.description = await invoke("get_description", { path }) || "" as string;
       }
 
       this.pruneLayers(layer);
@@ -206,10 +206,14 @@ export default {
       this.selectedNode = updated;
     },
     removeContext() {
-      invoke("remove_description");
+      if(this .selectedNode && this.selectedNode.data && this.selectedNode.data.description) {
+        const path = this.selectedNode?.id || "" as string;
+        this.selectedNode.data.description = "" as string;
+        invoke("delete_folder_data", { path });
+      }
     },
   },
-  emits: ["closeDialog", "addNode", "addContext", "remove-context"],
+  emits: ["closeDialog", "addNode", "addContext", "removeContext"],
   components: {
     VueFlow,
     Background,
