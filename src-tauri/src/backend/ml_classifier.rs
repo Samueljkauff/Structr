@@ -1,8 +1,10 @@
 use std::path::PathBuf;
-use super::file_meta::FileMeta;
-use super::classification::{ClassificationResult, Classifier};
+use crate::domain::file_meta::FileMeta;
+use crate::domain::classification::{ClassificationResult, Classifier};
 
-pub struct MLClassifier;
+pub struct MLClassifier {
+    pub model: String,
+}
 
 impl Classifier for MLClassifier {
     fn classify(&self, meta: &FileMeta) -> ClassificationResult {
