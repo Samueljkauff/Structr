@@ -7,3 +7,4 @@ pub mod similarity;
 pub mod ml_classifier;
 pub mod ai;
 pub mod classification_service;
+pub mod file_manager;

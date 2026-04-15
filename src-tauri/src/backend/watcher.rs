@@ -9,7 +9,7 @@ use std::{
 use notify::{event::CreateKind, Config, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use tauri::{AppHandle, Manager};
 
-use crate::domain::{file_meta::FileMeta};
+use crate::{backend::file_manager::move_file, domain::file_meta::FileMeta};
 
 #[tauri::command]
 pub fn start(app: AppHandle) {
@@ -73,7 +73,16 @@ fn run_watcher(app: AppHandle, downloads: &Path) {
 
                         println!("Classification result: {:?}", result);
 
-                        // move_file(meta, result.suggested_path);
+                        let destination = result.suggested_path;
+
+                        let file_name = path.file_name().unwrap();
+                        let full_destination = Path::new(&destination).join(file_name);
+
+                        if let Err(e) = move_file(&path, &full_destination) {
+                            eprintln!("Move failed: {:?}", e);
+                        } else {
+                            println!("Moved file to: {:?}", &full_destination)
+                        }
                     });
                 }
                 Err(e) => eprintln!("Metadata error: {:?}", e),
