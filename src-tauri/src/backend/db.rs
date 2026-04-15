@@ -83,6 +83,24 @@ pub fn get_all_metadata(
         .map_err(|e| e.to_string())
 }
 
+pub fn get_all_descriptions(
+    app: &tauri::AppHandle
+) -> Result<Vec<(String, String)>, String> {
+    let mut conn = establish_connection(app)?;
+
+    let results = folder_metadata
+        .select((path, description))
+        .load::<(String, String)>(&mut conn)
+        .map_err(|e| e.to_string())?;
+
+    let valid = results
+        .into_iter()
+        .filter(|(p, _)| std::path::Path::new(p).exists())
+        .collect();
+
+    Ok(valid)
+}
+
 fn now() -> chrono::NaiveDateTime {
     Utc::now().naive_utc()
 }

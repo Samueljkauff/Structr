@@ -7,8 +7,12 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/core";
 import FolderScene from "./components/FolderScene.vue";
+import { onMounted } from "vue";
 
-invoke("start");
+onMounted(async () => {
+
+  await invoke("start");
+});
 </script>
 
 <style>

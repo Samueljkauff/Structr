@@ -3,7 +3,7 @@ use mime_guess::from_ext;
 use chrono::Local;
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct FileMeta {
     pub file_name: String,
     pub extension: Option<String>,

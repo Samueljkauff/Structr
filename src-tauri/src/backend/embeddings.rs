@@ -1,4 +1,4 @@
 
-pub fn embed(text: &str) -> Vec<f32> {
+// pub fn embed(text: &str) -> Vec<f32> {
     
-}
+// }

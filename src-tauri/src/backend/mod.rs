@@ -5,3 +5,5 @@ pub mod db_commands;
 pub mod embeddings;
 pub mod similarity;
 pub mod ml_classifier;
+pub mod ai;
+pub mod classification_service;

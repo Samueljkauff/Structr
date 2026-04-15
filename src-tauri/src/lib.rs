@@ -24,7 +24,7 @@ pub fn run() {
             get_all_data,
             get_folder_data,
             delete_folder_data,
-            get_description
+            get_description,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

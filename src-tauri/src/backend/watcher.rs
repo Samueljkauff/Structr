@@ -1,40 +1,44 @@
-use std::{fs::{self}, path::{Path, PathBuf}, sync::mpsc::channel, thread, time::Duration};
+use std::{
+    fs::{self},
+    path::{Path, PathBuf},
+    sync::mpsc::channel,
+    thread,
+    time::Duration,
+};
 
-use notify::{Config, EventKind, RecommendedWatcher, RecursiveMode, Watcher, event::CreateKind};
+use notify::{event::CreateKind, Config, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use tauri::{AppHandle, Manager};
 
-use crate::domain::{classification::Classifier, file_meta::FileMeta};
-use crate::domain::dummy_classifier::DummyClassifier;
+use crate::domain::{file_meta::FileMeta};
 
 #[tauri::command]
 pub fn start(app: AppHandle) {
-
-    let downloads = initialize_download_directory(app);
+    let downloads = initialize_download_directory(&app);
     println!("Watching: {:?}", downloads);
+    let app_clone = app.clone();
 
     thread::spawn(move || {
-        run_watcher(&downloads);
+        run_watcher(app_clone, &downloads);
     });
 }
 
-fn initialize_download_directory(app: AppHandle) -> PathBuf {
-        app.path()
+fn initialize_download_directory(app: &AppHandle) -> PathBuf {
+    app.path()
         .download_dir()
         .expect("Failed to resolve downloads directory")
 }
 
-fn run_watcher(downloads: &Path) {
-        let (tx, rx) = channel();
+fn run_watcher(app: AppHandle, downloads: &Path) {
+    let (tx, rx) = channel();
 
-        let mut watcher =
-            RecommendedWatcher::new(tx, Config::default())
-                .expect("Failed to create watcher");
+    let mut watcher =
+        RecommendedWatcher::new(tx, Config::default()).expect("Failed to create watcher");
 
-        watcher
-            .watch(&downloads, RecursiveMode::Recursive)
-            .expect("Failed to watch directory");
+    watcher
+        .watch(&downloads, RecursiveMode::Recursive)
+        .expect("Failed to watch directory");
 
-        println!("Watcher started");
+    println!("Watcher started");
 
     for res in rx {
         let event = match res {
@@ -53,11 +57,24 @@ fn run_watcher(downloads: &Path) {
             println!("File download detected: {:?}, {:?}", event.kind, path);
 
             match FileMeta::new(&path) {
-                Ok(data) => { 
-                    println!("{:?}", data);
-                    let classifier = DummyClassifier;
-                    let results = classifier.classify(&data);
-                    println!("{:?}", results);
+                Ok(data) => {
+                    let app_handle = app.clone();
+                    let meta = data.clone();
+
+                    tauri::async_runtime::spawn(async move {
+                        let service =
+                            crate::backend::classification_service::ClassificationService {
+                                classifier: crate::backend::ml_classifier::MLClassifier {
+                                    model: "llama3".into(),
+                                },
+                            };
+
+                        let result = service.classify(&app_handle, &meta).await;
+
+                        println!("Classification result: {:?}", result);
+
+                        // move_file(meta, result.suggested_path);
+                    });
                 }
                 Err(e) => eprintln!("Metadata error: {:?}", e),
             }
@@ -66,11 +83,10 @@ fn run_watcher(downloads: &Path) {
 }
 
 fn is_file_done_downloading(path: &Path, event_kind: EventKind) -> bool {
-
     if !path.exists() {
         return false;
     }
-    
+
     if !path.is_file() {
         return false;
     }
