@@ -17,8 +17,6 @@ pub fn establish_connection(app: &tauri::AppHandle) -> Result<SqliteConnection, 
 
     db_path.push("metadata.db");
 
-    println!("DB PATH: {:?}", db_path);
-
     SqliteConnection::establish(db_path.to_str().unwrap())
         .map_err(|e| e.to_string())
 }
