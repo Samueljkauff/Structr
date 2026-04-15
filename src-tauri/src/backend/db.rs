@@ -6,6 +6,7 @@ use crate::domain::models::*;
 use tauri::Manager;
 use std::fs;
 use diesel::result::Error;
+use crate::schema::file_moves;
 
 pub fn establish_connection(app: &tauri::AppHandle) -> Result<SqliteConnection, String> {
     let mut db_path = app
@@ -101,4 +102,20 @@ pub fn get_all_descriptions(
 
 fn now() -> chrono::NaiveDateTime {
     Utc::now().naive_utc()
+}
+
+pub fn insert_file_move(
+    conn: &mut SqliteConnection,
+    from: &str,
+    to: &str,
+) -> Result<(), String> {
+    diesel::insert_into(file_moves::table)
+        .values((
+            file_moves::from_path.eq(from),
+            file_moves::to_path.eq(to),
+        ))
+        .execute(conn)
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
 }

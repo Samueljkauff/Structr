@@ -31,8 +31,6 @@ impl ClassificationService {
             .classify_with_context(meta, descriptions)
             .await;
 
-        // let _ = db::save_classification(app, meta, &result);
-
         result
     }
 }

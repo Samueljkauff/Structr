@@ -1,0 +1,7 @@
+-- Your SQL goes here
+CREATE TABLE file_moves (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    from_path TEXT NOT NULL,
+    to_path TEXT NOT NULL,
+    moved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

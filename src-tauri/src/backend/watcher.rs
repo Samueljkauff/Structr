@@ -9,6 +9,7 @@ use std::{
 use notify::{event::CreateKind, Config, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use tauri::{AppHandle, Manager};
 
+use crate::backend::db;
 use crate::{backend::file_manager::move_file, domain::file_meta::FileMeta};
 
 #[tauri::command]
@@ -55,8 +56,9 @@ fn run_watcher(app: AppHandle, downloads: &Path) {
             }
 
             println!("File download detected: {:?}, {:?}", event.kind, path);
+            let file_path = path.clone();
 
-            match FileMeta::new(&path) {
+            match FileMeta::new(&file_path) {
                 Ok(data) => {
                     let app_handle = app.clone();
                     let meta = data.clone();
@@ -73,15 +75,24 @@ fn run_watcher(app: AppHandle, downloads: &Path) {
 
                         println!("Classification result: {:?}", result);
 
-                        let destination = result.suggested_path;
-
-                        let file_name = path.file_name().unwrap();
+                        let destination = &result.suggested_path;
+                        if destination.as_os_str().is_empty() {
+                            eprintln!("Invalid classification → skipping");
+                            return;
+                        }
+                        let file_name = file_path.file_name().unwrap();
                         let full_destination = Path::new(&destination).join(file_name);
 
                         if let Err(e) = move_file(&path, &full_destination) {
                             eprintln!("Move failed: {:?}", e);
                         } else {
-                            println!("Moved file to: {:?}", &full_destination)
+                            println!("Moved file to: {:?}", &full_destination);
+                            let mut conn = db::establish_connection(&app_handle).expect("Database Error");
+
+                            let _ = db::insert_file_move(&mut conn, 
+                                file_path.to_str().unwrap(),
+                                full_destination.to_str().unwrap(),
+                            );
                         }
                     });
                 }
