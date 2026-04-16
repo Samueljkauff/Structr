@@ -10,6 +10,7 @@
       @add-context="addContext"
       @remove-context="removeContext"
     />
+    <HistoryMenu/>
     <MiniMap />
     <Background :variant="BackgroundVariant.Dots" />
     <Controls
@@ -44,6 +45,7 @@ import {
 import { Controls } from "@vue-flow/controls";
 import ContextMenu from "./ContextMenu.vue";
 import Dialog from "./Dialog.vue";
+import HistoryMenu from "./HistoryMenu.vue";
 
 export default {
   data() {
@@ -221,6 +223,7 @@ export default {
     Controls,
     ContextMenu,
     Dialog,
+    HistoryMenu
   },
 };
 </script>

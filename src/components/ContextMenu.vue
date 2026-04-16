@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed top-4 right-4 z-50 w-72">
+  <div class="fixed top-17 right-4 z-50 w-72">
     <div v-if="selectedNode" class="flex flex-col gap-3">
       <p class="text-white text-2xl overflow-hidden truncate">Folder: {{ selectedNode.data.label }}</p>
       <p class="text-gray-400">What files belongs in {{ selectedNode.data.label }}?</p>
