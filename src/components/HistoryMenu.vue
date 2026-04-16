@@ -9,7 +9,7 @@
   <transition name="slide">
     <div
       v-if="dialogOpen"
-      class="fixed top-4 right-4 h-[calc(100vh-25px)] w-74 z-100 border backdrop-blur-xl bg-[#091413]/30 border-[#B0E4CC] p-4 rounded-lg"
+      class="fixed top-4 right-4 h-[calc(100vh-25px)] w-74 z-100 border backdrop-blur-xl bg-[#091413]/30 border-[#B0E4CC] p-4 rounded-lg overflow-y-scroll"
     >
       <div
         @click="closeHistoryLog"

@@ -1,23 +1,32 @@
 use std::path::PathBuf;
 
 use crate::backend::ai;
-use crate::domain::classification::ClassificationResult;
 use crate::domain::file_meta::FileMeta;
+use crate::domain::classification::{ClassificationResult};
 
 pub struct MLClassifier {
     pub model: String,
 }
 
 impl MLClassifier {
-    fn build_prompt(&self, meta: &FileMeta, descriptions: &[(String, String)]) -> String {
+    fn build_prompt(
+        &self,
+        meta: &FileMeta,
+        descriptions: &[(String, String)],
+    ) -> String {
         let category_block = descriptions
             .iter()
-            .map(|(path, desc)| format!("- path: {}\n  description: {}", path, desc))
+            .map(|(path, desc)| {
+                format!(
+                    "- path: {}\n  description: {}",
+                    path, desc
+                )
+            })
             .collect::<Vec<_>>()
             .join("\n");
 
         format!(
-            r#"
+r#"
 You are a file organization assistant.
 
 You MUST return ONLY valid JSON.
@@ -37,7 +46,17 @@ Rules:
 - You MUST NOT invent new paths
 - "selected_path" MUST be one of the provided folders
 - "confidence" MUST be a number between 0 and 1
-- If unsure, choose the closest match with lower confidence
+
+Decision Rules (VERY IMPORTANT):
+- Match files primarily using FILE NAME KEYWORDS
+- If a file name contains keywords found in a folder description, that folder MUST be selected
+- Course codes (e.g. CS-450, BUSA-103, COMM-319, KNGT-450) are STRONG signals and override file type
+- Academic terms like "syllabus", "assignment", "project", "report" indicate course folders
+- File type (PDF, JPG, etc.) is a WEAK signal compared to keywords
+
+Fallback Rule:
+- The Downloads folder should ONLY be selected if NO strong keyword match exists
+- If multiple folders match, choose the MOST specific one
 
 Example output:
 {{
@@ -75,9 +94,22 @@ Now respond with ONLY the JSON.
             .trim_end_matches("```")
             .trim();
 
-        let parsed: serde_json::Value = match serde_json::from_str(cleaned) {
+        let mut cleaned = cleaned.to_string();
+
+        if let (Some(start), Some(end)) = (cleaned.find('{'), cleaned.rfind('}')) {
+            cleaned = cleaned[start..=end].to_string();
+        }
+
+        if !cleaned.trim_end().ends_with('}') {
+            cleaned.push('}');
+        }
+
+        let parsed: serde_json::Value = match serde_json::from_str(&cleaned) {
             Ok(v) => v,
-            Err(_) => {
+            Err(e) => {
+                eprintln!("JSON parse failed: {}", e);
+                eprintln!("Cleaned response was:\n{}", cleaned);
+
                 return ClassificationResult {
                     category: "unknown".into(),
                     confidence: 0.0,
@@ -87,11 +119,18 @@ Now respond with ONLY the JSON.
             }
         };
 
-        let path = parsed["selected_path"].as_str().unwrap_or("").to_string();
+        let path = parsed["selected_path"]
+            .as_str()
+            .unwrap_or("")
+            .to_string();
 
-        let confidence = parsed["confidence"].as_f64().unwrap_or(0.0) as f32;
+        let confidence = parsed["confidence"]
+            .as_f64()
+            .unwrap_or(0.0) as f32;
 
-        let reasoning = parsed["reasoning"].as_str().map(|s| s.to_string());
+        let reasoning = parsed["reasoning"]
+            .as_str()
+            .map(|s| s.to_string());
 
         ClassificationResult {
             category: path.clone(),
@@ -119,7 +158,7 @@ Now respond with ONLY the JSON.
                 };
             }
         };
-        // println!("RAW MODEL OUTPUT:\n{}", &response);
+        println!("RAW MODEL OUTPUT:\n{}", response);
         self.parse_response(&response)
     }
 }

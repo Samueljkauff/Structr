@@ -8,7 +8,7 @@
         class="input"
         type="text"
         placeholder="Enter context (max 50 chars)"
-        maxlength="100"
+        maxlength="200"
       />
       <div class="text-gray-400">Description: <p class="inline" :class="selectedNode.data.description ? 'text-green-600' : 'text-red-600'">{{ selectedNode.data.description ? selectedNode.data.description : 'None' }}</p></div>
       <div class="w-full flex justify-end">
