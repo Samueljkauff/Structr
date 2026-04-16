@@ -1,44 +1,49 @@
 use std::path::PathBuf;
 
 use crate::backend::ai;
+use crate::domain::classification::ClassificationResult;
 use crate::domain::file_meta::FileMeta;
-use crate::domain::classification::{ClassificationResult};
 
 pub struct MLClassifier {
     pub model: String,
 }
 
 impl MLClassifier {
-    fn build_prompt(
-        &self,
-        meta: &FileMeta,
-        descriptions: &[(String, String)],
-    ) -> String {
+    fn build_prompt(&self, meta: &FileMeta, descriptions: &[(String, String)]) -> String {
         let category_block = descriptions
             .iter()
-            .map(|(path, desc)| {
-                format!(
-                    "- path: {}\n  description: {}",
-                    path, desc
-                )
-            })
+            .map(|(path, desc)| format!("- path: {}\n  description: {}", path, desc))
             .collect::<Vec<_>>()
             .join("\n");
 
         format!(
-r#"
+            r#"
 You are a file organization assistant.
 
-Assign the file to the BEST matching folder.
+You MUST return ONLY valid JSON.
+DO NOT include any text before or after the JSON.
+DO NOT use markdown.
+DO NOT use ``` blocks.
 
-You MUST choose ONE of the provided folders.
-Do NOT invent new folders.
-
-Return ONLY valid JSON:
+The JSON MUST exactly match this schema:
 {{
-  "selected_path": "...",
-  "confidence": 0.0,
-  "reasoning": "..."
+  "selected_path": "string",
+  "confidence": number,
+  "reasoning": "string"
+}}
+
+Rules:
+- You MUST choose EXACTLY ONE path from the provided list
+- You MUST NOT invent new paths
+- "selected_path" MUST be one of the provided folders
+- "confidence" MUST be a number between 0 and 1
+- If unsure, choose the closest match with lower confidence
+
+Example output:
+{{
+  "selected_path": "/Users/example/Pictures",
+  "confidence": 0.82,
+  "reasoning": "File is a JPG image, best fits Pictures folder"
 }}
 
 File Metadata:
@@ -51,11 +56,7 @@ File Metadata:
 Available Folders:
 {}
 
-Rules:
-- Use file name and extension as primary signals
-- Use mime and size as supporting signals
-- Choose the MOST specific match
-- Never return a path not listed
+Now respond with ONLY the JSON.
 "#,
             meta.file_name,
             meta.extension.as_deref().unwrap_or("unknown"),
@@ -86,18 +87,11 @@ Rules:
             }
         };
 
-        let path = parsed["selected_path"]
-            .as_str()
-            .unwrap_or("")
-            .to_string();
+        let path = parsed["selected_path"].as_str().unwrap_or("").to_string();
 
-        let confidence = parsed["confidence"]
-            .as_f64()
-            .unwrap_or(0.0) as f32;
+        let confidence = parsed["confidence"].as_f64().unwrap_or(0.0) as f32;
 
-        let reasoning = parsed["reasoning"]
-            .as_str()
-            .map(|s| s.to_string());
+        let reasoning = parsed["reasoning"].as_str().map(|s| s.to_string());
 
         ClassificationResult {
             category: path.clone(),
@@ -125,7 +119,7 @@ Rules:
                 };
             }
         };
-
+        // println!("RAW MODEL OUTPUT:\n{}", &response);
         self.parse_response(&response)
     }
 }

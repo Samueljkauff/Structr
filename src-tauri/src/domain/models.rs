@@ -16,3 +16,11 @@ pub struct NewNodeMetadata<'a> {
     pub description: &'a str,
     pub updated_at: NaiveDateTime,
 }
+
+#[derive(Queryable, serde::Serialize)]
+pub struct FileMoveDisplay {
+    pub id: i32,
+    pub from_path: String,
+    pub to_path: String,
+    pub moved_at: Option<NaiveDateTime>,
+}

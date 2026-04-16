@@ -1,4 +1,4 @@
-use crate::{backend::db::*, domain::models::NodeMetadata};
+use crate::{backend::db::*, domain::models::{FileMoveDisplay, NodeMetadata}};
 
 #[tauri::command]
 pub fn save_folder_data(
@@ -42,4 +42,11 @@ pub fn delete_folder_data(
 ) -> Result<(), String> {
     remove_metadata(&app, &path)?;
     Ok(())
+}
+
+#[tauri::command]
+pub fn get_recent_moves(app: tauri::AppHandle) -> Result<Vec<FileMoveDisplay>, String> {
+    let mut conn = crate::backend::db::establish_connection(&app)?;
+    
+    crate::backend::db::get_recent_file_moves(&mut conn, 20)
 }

@@ -17,6 +17,7 @@ pub fn establish_connection(app: &tauri::AppHandle) -> Result<SqliteConnection, 
     fs::create_dir_all(&db_path).map_err(|e| e.to_string())?;
 
     db_path.push("metadata.db");
+    // println!("DB PATH: {:?}", db_path);
 
     SqliteConnection::establish(db_path.to_str().unwrap())
         .map_err(|e| e.to_string())
@@ -118,4 +119,15 @@ pub fn insert_file_move(
         .map_err(|e| e.to_string())?;
 
     Ok(())
+}
+
+pub fn get_recent_file_moves(
+    conn: &mut SqliteConnection,
+    limit_count: i64,
+) -> Result<Vec<FileMoveDisplay>, String> {
+    file_moves::table
+        .order(file_moves::id.desc())
+        .limit(limit_count)
+        .load::<FileMoveDisplay>(conn)
+        .map_err(|e| e.to_string())
 }
