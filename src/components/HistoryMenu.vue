@@ -18,8 +18,14 @@
         <button class="cursor-pointer">X</button>
       </div>
       <div v-for="item in history" class="border-t border-t-[#B0E4CC] text-[#B0E4CC] my-4">
-        <p class="text">{{ item.id }}</p>
-        <p class="text">This file was moved to: {{ item.to_path }}</p>
+        <div class="my-3">
+        <p class="text inline">{{ item.id + `. ` }}</p>
+        <p class="text inline text-white">{{ item.fileName }}</p>
+        </div>
+        <div>
+            <p>This file was moved to: </p>
+            <p class="text text-white font-bold">{{ item.toPath }}</p>
+        </div>
       </div>
     </div>
   </transition>
@@ -27,7 +33,7 @@
 
 <script lang="ts">
 import { invoke } from '@tauri-apps/api/core';
-import { History } from '../interfaces/FileHistory';
+import { History, RawHistory } from '../interfaces/FileHistory';
 
 export default {
   data() {
@@ -38,8 +44,17 @@ export default {
   },
   methods: {
     async openHistoryLog() {
-      this.history = await invoke("get_recent_moves");
-      this.dialogOpen = true;
+    const raw = await invoke<RawHistory[]>("get_recent_moves");
+
+    this.history = raw.map(item => ({
+        id: item.id,
+        fileName: item.to_path.split("/").pop(),
+        fromPath: item.from_path,
+        toPath: item.to_path.split("/").slice(0, -1).join("/"),
+        movedAt: item.moved_at,
+    }));
+
+    this.dialogOpen = true;
     },
     closeHistoryLog() {
       this.dialogOpen = false;
