@@ -1,12 +1,11 @@
 # Structrs
 
-<img width="1024" height="768" alt="pp1" src="./read-me-files/Capstone.Presentation-pages-1.pdf" />
-<img width="1024" height="768" alt="pp2" src="./read-me-files/Capstone.Presentation-pages-2.pdf" />
-<img width="1024" height="768" alt="pp3" src="./read-me-files/Capstone.Presentation-pages-3.pdf" />
-<img width="1024" height="768" alt="pp4" src="./read-me-files/Capstone.Presentation-pages-4.pdf" />
-<img width="1024" height="768" alt="pp5" src="./read-me-files/Capstone.Presentation-pages-5.pdf" />
-<img width="1024" height="768" alt="pp6" src="./read-me-files/Capstone.Presentation-pages-6.pdf" />
-
+<img width="1024" height="768" alt="pp1" src="./read-me-files/Capstone.Presentation-pages-1-1.png" />
+<img width="1024" height="768" alt="pp1" src="./read-me-files/Capstone.Presentation-pages-2-1.png" />
+<img width="1024" height="768" alt="pp1" src="./read-me-files/Capstone.Presentation-pages-3-1.png" />
+<img width="1024" height="768" alt="pp1" src="./read-me-files/Capstone.Presentation-pages-4-1.png" />
+<img width="1024" height="768" alt="pp1" src="./read-me-files/Capstone.Presentation-pages-5-1.png" />
+<img width="1024" height="768" alt="pp1" src="./read-me-files/Capstone.Presentation-pages-6-1.png" />
 
 <img width="1024" height="768" alt="StructrsPoster" src="https://github.com/user-attachments/assets/02ef0266-522c-4fbc-8dbe-082d08dadda1" />
 
