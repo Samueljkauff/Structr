@@ -1,4 +1,7 @@
 # Structrs
+
+[Capstone Presentation.pdf](https://github.com/user-attachments/files/27144348/Capstone.Presentation.pdf)
+
 <img width="1024" height="768" alt="githubPoster" src="https://github.com/user-attachments/assets/02ef0266-522c-4fbc-8dbe-082d08dadda1" />
 
 ## Installation Guide 
